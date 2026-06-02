@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+Frontend/cleancitynigeria/node_modules/
+Backend/node_modules/
+
+# Local Environment Files (contains database credentials, JWT secrets, etc.)
+.env
+Backend/.env
+Frontend/cleancitynigeria/.env
+
+# Build outputs
+Frontend/cleancitynigeria/dist/
+dist/
+
+# IDE / System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
