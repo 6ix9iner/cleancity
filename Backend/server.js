@@ -34,8 +34,20 @@ connectDB();
 
 // ── Core Middleware ──────────────────────────────────────────────
 app.use(helmet());
+// Build list of allowed origins from CLIENT_URL (supports comma-separated values)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',').map(u => u.trim()) : []),
+];
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g., mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    console.warn(`CORS blocked origin: ${origin}`);
+    callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '50mb' }));
