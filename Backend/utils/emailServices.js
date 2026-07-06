@@ -21,22 +21,10 @@ const createTransporter = () => {
  * Skips sending gracefully if email credentials are not configured.
  */
 const sendEmail = async ({ to, subject, html }) => {
-  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
-
   // Skip if Gmail credentials haven't been set yet
   if (!process.env.EMAIL_USER || process.env.EMAIL_PASS === 'your_app_password') {
     console.log(`📧 [Email skipped — not configured] To: ${to} | Subject: ${subject}`);
     return { success: false, reason: 'Email not configured' };
-  }
-
-  // In development mode, log instead of sending
-  if (isDevelopment) {
-    console.log(`\n${'='.repeat(80)}`);
-    console.log(`📧 [DEVELOPMENT MODE] Email would be sent`);
-    console.log(`To: ${to}`);
-    console.log(`Subject: ${subject}`);
-    console.log(`${'='.repeat(80)}`);
-    return { success: true, mode: 'development' };
   }
 
   try {

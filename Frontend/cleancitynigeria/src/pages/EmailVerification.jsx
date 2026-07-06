@@ -13,7 +13,7 @@ const EmailVerification = () => {
   const [success, setSuccess] = useState('');
   const [code, setCode] = useState('');
   const [timer, setTimer] = useState(300); // 5 minutes
-  const email = location.state?.email || '';
+  const [email, setEmail] = useState(location.state?.email || '');
 
   useEffect(() => {
     if (timer > 0) {
@@ -33,6 +33,11 @@ const EmailVerification = () => {
     setError('');
     setSuccess('');
 
+    if (!email.trim()) {
+      setError('Please enter your email address');
+      return;
+    }
+
     if (!code.trim()) {
       setError('Please enter the verification code');
       return;
@@ -46,7 +51,7 @@ const EmailVerification = () => {
     setLoading(true);
     try {
       await verifyEmail({
-        email: email || '',
+        email: email.trim(),
         code: code,
       });
       setSuccess('Email verified successfully!');
@@ -74,6 +79,17 @@ const EmailVerification = () => {
         {success && <Alert type="success" message={success} />}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {!location.state?.email && (
+            <Input
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
+              required
+            />
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               6-Digit Verification Code

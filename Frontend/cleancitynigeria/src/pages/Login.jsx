@@ -65,7 +65,11 @@ const Login = () => {
         navigate('/verify-email', { state: { email: formData.email } });
       }
     } catch (err) {
-      setError(getErrorMessage(err));
+      if (err.response?.status === 403 || err.response?.data?.message?.toLowerCase().includes('verify')) {
+        navigate('/verify-email', { state: { email: formData.email } });
+      } else {
+        setError(getErrorMessage(err));
+      }
     } finally {
       setLoading(false);
     }
