@@ -44,7 +44,16 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g., mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    
+    // Check if origin is explicitly allowed or belongs to a Netlify/Vercel deployment
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.netlify.app') || 
+                      origin.endsWith('.vercel.app');
+
+    if (isAllowed) {
+      return callback(null, true);
+    }
+    
     console.warn(`CORS blocked origin: ${origin}`);
     callback(new Error(`Origin ${origin} not allowed by CORS`));
   },
