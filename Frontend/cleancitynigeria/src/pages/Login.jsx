@@ -53,16 +53,12 @@ const Login = () => {
         password: formData.password,
       });
 
-      if (result.user.isVerified) {
-        if (result.user.role === 'admin') {
-          navigate('/admincleancity');
-        } else if (result.user.role === 'citizen') {
-          navigate('/dashboard');
-        } else {
-          navigate('/agency');
-        }
+      if (result.user.role === 'admin') {
+        navigate('/admincleancity');
+      } else if (result.user.role === 'citizen') {
+        navigate('/dashboard');
       } else {
-        navigate('/verify-email', { state: { email: formData.email } });
+        navigate('/agency');
       }
     } catch (err) {
       if (err.response?.status === 403 || err.response?.data?.message?.toLowerCase().includes('verify')) {

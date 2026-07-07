@@ -157,6 +157,7 @@ const login = async (req, res, next) => {
           totalReports: user.totalReports,
           state: user.state,
           lga: user.lga,
+          isVerified: user.isVerified,
         },
       },
     });
