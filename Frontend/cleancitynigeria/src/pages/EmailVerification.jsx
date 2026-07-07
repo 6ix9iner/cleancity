@@ -7,13 +7,25 @@ import { getErrorMessage } from '../utils/helpers';
 const EmailVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { verifyEmail } = useAuth();
+  const { verifyEmail, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [code, setCode] = useState('');
   const [timer, setTimer] = useState(300); // 5 minutes
   const [email, setEmail] = useState(location.state?.email || '');
+
+  useEffect(() => {
+    if (user && user.isVerified) {
+      if (user.role === 'admin') {
+        navigate('/admincleancity');
+      } else if (user.role === 'citizen') {
+        navigate('/dashboard');
+      } else {
+        navigate('/agency');
+      }
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -59,7 +71,15 @@ const EmailVerification = () => {
         navigate('/login');
       }, 2000);
     } catch (err) {
-      setError(getErrorMessage(err));
+      const msg = getErrorMessage(err);
+      if (msg === 'Email already verified.') {
+        setSuccess('This email is already verified! Redirecting to login...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
